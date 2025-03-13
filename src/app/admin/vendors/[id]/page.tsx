@@ -247,7 +247,7 @@ export default function VendorDetailsPage() {
                               key={product.id}
                               className='flex items-center gap-4'
                             >
-                              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-sm font-medium'>
+                              <div className='flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-medium'>
                                 {index + 1}
                               </div>
                               <div className='h-10 w-10 overflow-hidden rounded-md bg-gray-100'>
