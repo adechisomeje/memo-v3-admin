@@ -34,7 +34,6 @@ import { useSession } from 'next-auth/react'
 import { useQuery } from '@tanstack/react-query'
 import TransactionManagementSkeleton from './tnxLoading'
 import {
-  OrderStatusBadgeProps,
   TransactionMetricCardProps,
   TransactionStatusBadgeProps,
   TransactionTypeBadgeProps,
@@ -140,8 +139,8 @@ export default function TransactionsPage() {
                   <TableHead>Type</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Vendor</TableHead>
-                  <TableHead>Order Status</TableHead>
-                  <TableHead>Payment Status</TableHead>
+
+                  <TableHead> Status</TableHead>
                   <TableHead className='text-right'>Amount</TableHead>
                   {/* <TableHead className='text-right'>Actions</TableHead> */}
                 </TableRow>
@@ -177,9 +176,7 @@ export default function TransactionsPage() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <OrderStatusBadge status={transaction.order.status} />
-                    </TableCell>
+
                     <TableCell>
                       <TransactionStatusBadge status={transaction.status} />
                     </TableCell>
@@ -303,24 +300,6 @@ function TransactionTypeBadge({ type }: TransactionTypeBadgeProps) {
   return (
     <Badge variant='outline' className={`${variant} border-none`}>
       {displayName}
-    </Badge>
-  )
-}
-
-function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
-  const variants: Record<string, string> = {
-    new: 'bg-blue-100 text-blue-800',
-    paid: 'bg-yellow-100 text-yellow-800',
-    processing: 'bg-purple-100 text-purple-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-  }
-
-  const variant = variants[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
-
-  return (
-    <Badge variant='outline' className={`${variant} border-none`}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
     </Badge>
   )
 }

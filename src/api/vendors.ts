@@ -5,6 +5,12 @@ export interface OperatingHours {
   orderRequestWindow: string[]
 }
 
+export interface Stats {
+  productCount: number
+  orderCount: number
+  totalRevenue: number
+}
+
 export interface PaymentDetails {
   bankName: string
   bankCode: string
@@ -26,6 +32,7 @@ export interface VendorResponse {
   businessAddress: string
   operatingHours: OperatingHours
   paymentDetails: PaymentDetails
+  stats: Stats
   profilePicture: string
   isVerified: boolean
   role: 'VENDOR' | 'CUSTOMER' | 'ADMIN'
@@ -36,10 +43,55 @@ export interface VendorResponse {
   __v: number
 }
 
-export async function getAllVendors() {
-  const response = await axiosClient.get<ApiResponse<VendorResponse>>(
-    '/admin/vendors'
-  )
+interface VendorProduct {
+  _id: string
+  name: string
+  basePrice: number
+  status: 'active' | 'inactive'
+  category: string
+  images: string[]
+}
 
+type VendorOrder = {
+  orderId: string
+  customerName: string
+  customerEmail: string
+  date: string // You can use `Date` if you plan to parse it into a Date object
+  status: 'new' | 'processing' | 'shipped' | 'delivered' | 'cancelled' // Adjust based on possible statuses
+  amount: number
+}
+
+export async function getAllVendors(page: number = 1) {
+  const response = await axiosClient.get<ApiResponse<VendorResponse>>(
+    `/admin/vendors?page=${page}`
+  )
+  return response.data
+}
+
+export async function getVendorDetails(vendorId: string) {
+  const response = await axiosClient.get<ApiResponse<VendorResponse>>(
+    `/admin/vendors/${vendorId}`
+  )
+  return response.data
+}
+
+export async function getVendorProducts(vendorId: string) {
+  const response = await axiosClient.get<ApiResponse<VendorProduct>>(
+    `/admin/vendors/${vendorId}/products`
+  )
+  return response.data
+}
+
+export async function getVendorOrders(vendorId: string) {
+  const response = await axiosClient.get<ApiResponse<VendorOrder>>(
+    `/admin/vendors/${vendorId}/orders`
+  )
+  return response.data
+}
+
+export async function getVendorPerformance(vendorId: string) {
+  const response = await axiosClient.get<ApiResponse<VendorProduct>>(
+    `/admin/vendors/${vendorId}/orders`
+  )
   return response.data
 }

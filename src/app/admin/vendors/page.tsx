@@ -3,6 +3,7 @@
 import type React from 'react'
 import { MoreHorizontal, Search, Filter, Eye, Store, X } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -25,16 +26,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/queries'
-import { getAllVendors, OperatingHours, PaymentDetails } from '@/api/vendors'
+import {
+  getAllVendors,
+  OperatingHours,
+  PaymentDetails,
+  Stats,
+} from '@/api/vendors'
 import { useSession } from 'next-auth/react'
 import VendorsPageSkeleton from './vendorsLoading'
 import { VendorMetricCardProps, VendorStatusBadgeProps } from '@/types/types'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
 
 export default function VendorsPage() {
+  const [currentPage, setCurrentPage] = useState(1)
   const { status } = useSession()
   const { data: vendorsResponse, isPending } = useQuery({
-    queryKey: [queryKeys.allVendors],
-    queryFn: () => getAllVendors(),
+    queryKey: [queryKeys.allVendors, currentPage],
+    queryFn: () => getAllVendors(currentPage),
     enabled: status === 'authenticated',
     staleTime: 5 * 60 * 1000,
   })
@@ -60,6 +76,7 @@ export default function VendorsPage() {
     businessAddress: string
     operatingHours: OperatingHours
     paymentDetails: PaymentDetails
+    stats: Stats
     profilePicture: string
     isVerified: boolean
     role: 'VENDOR' | 'CUSTOMER' | 'ADMIN'
@@ -71,8 +88,45 @@ export default function VendorsPage() {
   }>
 
   const totalVendors = vendorsResponse?.total || 0
-  // const currentPage = vendorsResponse?.page || 1
-  // const pageLimit = vendorsResponse?.limit || 10
+  const totalPages = Math.ceil(
+    (vendorsResponse?.total || 0) / (vendorsResponse?.limit || 10)
+  )
+
+  const renderPaginationLinks = () => {
+    const pages = []
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 || // First page
+        i === totalPages || // Last page
+        (i >= currentPage - 1 && i <= currentPage + 1) // Pages around current page
+      ) {
+        pages.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              href='#'
+              isActive={i === currentPage}
+              onClick={(e) => {
+                e.preventDefault()
+                setCurrentPage(i)
+              }}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        )
+      } else if (
+        (i === currentPage - 2 && currentPage > 3) ||
+        (i === currentPage + 2 && currentPage < totalPages - 2)
+      ) {
+        pages.push(
+          <PaginationItem key={i}>
+            <PaginationEllipsis />
+          </PaginationItem>
+        )
+      }
+    }
+    return pages
+  }
 
   return (
     <div className='space-y-6'>
@@ -149,7 +203,7 @@ export default function VendorsPage() {
                   </TableHead>
                   <TableHead className='hidden md:table-cell'>Orders</TableHead>
                   <TableHead>Revenue</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Verification</TableHead>
                   <TableHead className='text-right'>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -183,10 +237,12 @@ export default function VendorsPage() {
                       </div>
                     </TableCell>
                     <TableCell className='hidden md:table-cell'>
-                      {vendor.productCategories?.length || 0}
+                      {vendor.stats.productCount}
                     </TableCell>
-                    <TableCell className='hidden md:table-cell'>N/A</TableCell>
-                    <TableCell>N/A</TableCell>
+                    <TableCell className='hidden md:table-cell'>
+                      {vendor.stats.orderCount}
+                    </TableCell>
+                    <TableCell>{vendor.stats.totalRevenue}</TableCell>
                     <TableCell>
                       <VendorStatusBadge
                         status={vendor.isVerified ? 'active' : 'pending'}
@@ -223,19 +279,36 @@ export default function VendorsPage() {
             </Table>
           </div>
 
-          <div className='flex items-center justify-between mt-4'>
-            <div className='text-sm text-muted-foreground'>
-              Showing <strong>1</strong> to <strong>10</strong> of{' '}
-              <strong>100</strong> results
-            </div>
-            <div className='flex items-center gap-2'>
-              <Button variant='outline' size='sm' disabled>
-                Previous
-              </Button>
-              <Button variant='outline' size='sm'>
-                Next
-              </Button>
-            </div>
+          <div className='mt-10'>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1)
+                      }
+                    }}
+                  />
+                </PaginationItem>
+
+                {renderPaginationLinks()}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage < totalPages) {
+                        setCurrentPage(currentPage + 1)
+                      }
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </CardContent>
       </Card>

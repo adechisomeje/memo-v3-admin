@@ -8,10 +8,8 @@ import {
   Eye,
   Mail,
   Phone,
-  X,
 } from 'lucide-react'
 import Link from 'next/link'
-
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -45,12 +43,23 @@ import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import CustomersPageSkeleton from './customerLoading'
 import { UserMetricCardProps, UserStatusBadgeProps } from '@/types/types'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from '@/components/ui/pagination'
+import { useState } from 'react'
 
 export default function CustomersPage() {
+  const [currentPage, setCurrentPage] = useState(1)
   const { status } = useSession()
   const { data: customersResponse, isPending } = useQuery({
-    queryKey: [queryKeys.allCustomers],
-    queryFn: () => getAllCustomers(),
+    queryKey: [queryKeys.allCustomers, currentPage],
+    queryFn: () => getAllCustomers(currentPage),
     enabled: status === 'authenticated',
     staleTime: 5 * 60 * 1000,
   })
@@ -69,8 +78,45 @@ export default function CustomersPage() {
   }>
 
   const totalCustomers = customersResponse?.total || 0
-  const currentPage = customersResponse?.page || 1
-  const pageLimit = customersResponse?.limit || 10
+  const totalCustomerPages = Math.ceil(
+    (customersResponse?.total || 0) / (customersResponse?.limit || 10)
+  )
+
+  const renderPaginationLinks = () => {
+    const pages = []
+    for (let i = 1; i <= totalCustomerPages; i++) {
+      if (
+        i === 1 || // First page
+        i === totalCustomerPages || // Last page
+        (i >= currentPage - 1 && i <= currentPage + 1) // Pages around current page
+      ) {
+        pages.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              href='#'
+              isActive={i === currentPage}
+              onClick={(e) => {
+                e.preventDefault()
+                setCurrentPage(i)
+              }}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        )
+      } else if (
+        (i === currentPage - 2 && currentPage > 3) ||
+        (i === currentPage + 2 && currentPage < totalCustomerPages - 2)
+      ) {
+        pages.push(
+          <PaginationItem key={i}>
+            <PaginationEllipsis />
+          </PaginationItem>
+        )
+      }
+    }
+    return pages
+  }
 
   if (isPending) {
     return <CustomersPageSkeleton />
@@ -253,10 +299,10 @@ export default function CustomersPage() {
                                 <span>View Details</span>
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            {/* <DropdownMenuItem>
                               <X className='mr-2 h-4 w-4' />
                               <span>Block Customer</span>
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -267,30 +313,36 @@ export default function CustomersPage() {
             </Table>
           </div>
 
-          <div className='flex items-center justify-between mt-4'>
-            <div className='text-sm text-muted-foreground'>
-              Showing{' '}
-              <strong>
-                {customers.length > 0 ? (currentPage - 1) * pageLimit + 1 : 0}
-              </strong>{' '}
-              to{' '}
-              <strong>
-                {Math.min(currentPage * pageLimit, totalCustomers)}
-              </strong>{' '}
-              of <strong>{totalCustomers}</strong> results
-            </div>
-            <div className='flex items-center gap-2'>
-              <Button variant='outline' size='sm' disabled={currentPage <= 1}>
-                Previous
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                disabled={currentPage * pageLimit >= totalCustomers}
-              >
-                Next
-              </Button>
-            </div>
+          <div className='mt-10'>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1)
+                      }
+                    }}
+                  />
+                </PaginationItem>
+
+                {renderPaginationLinks()}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage < totalCustomerPages) {
+                        setCurrentPage(currentPage + 1)
+                      }
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </CardContent>
       </Card>

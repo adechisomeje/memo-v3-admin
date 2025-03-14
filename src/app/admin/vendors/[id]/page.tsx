@@ -1,6 +1,7 @@
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+'use client'
 
+import Link from 'next/link'
+import { ArrowLeft, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -13,17 +14,45 @@ import {
 import {
   Table,
   TableBody,
-  //   TableCell,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Image from 'next/image'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getVendorDetails, getVendorProducts } from '@/api/vendors'
+import { useParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+
+interface VendorProduct {
+  _id: string
+  name: string
+  basePrice: number
+  status: string
+  category: string
+  images: string[]
+}
 
 export default function VendorDetailsPage() {
-  // In a real app, you would fetch vendor data based on the ID
-  //   const vendor = vendors.find((vendor) => vendor.id === params.id) || vendors[0]
+  const { id } = useParams()
+  const { data: vendorDetails } = useQuery({
+    queryKey: ['vendorDetails', id],
+    queryFn: () => getVendorDetails(id as string),
+  })
+  const vendor = vendorDetails?.data
+
+  const { data: vendorProducts, isPending } = useQuery({
+    queryKey: ['vendorProducts', id],
+    queryFn: () => getVendorProducts(id as string),
+  })
+
+  console.log(vendorProducts)
+
+  if (isPending) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className='space-y-6'>
@@ -37,46 +66,50 @@ export default function VendorDetailsPage() {
       </div>
 
       <div className='grid gap-6 md:grid-cols-3'>
-        {/* <Card className='md:col-span-1'>
+        {/* vendor details card */}
+        <Card className='md:col-span-1'>
           <CardHeader className='flex flex-row items-center gap-4 pb-2'>
             <Avatar className='h-16 w-16'>
-              <AvatarImage src='' alt={vendor.name} />
-              <AvatarFallback>{getInitials(vendor.name)}</AvatarFallback>
+              <AvatarImage
+                src={vendor?.profilePicture || ''}
+                alt={vendor?.businessName}
+              />
+              <AvatarFallback>
+                {vendor?.firstName?.[0]}
+                {vendor?.lastName?.[0]}
+              </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle>{vendor.name}</CardTitle>
-              <CardDescription>Vendor</CardDescription>
+              <CardTitle>{vendor?.businessName}</CardTitle>
+              <CardDescription>{vendor?.role}</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
             <div className='space-y-4'>
               <div className='flex items-center gap-2 text-sm'>
                 <Mail className='h-4 w-4 text-muted-foreground' />
-                <span>{vendor.email}</span>
+                <span>{vendor?.email}</span>
               </div>
 
               <div className='pt-4 flex flex-col gap-2'>
                 <div className='flex items-center justify-between'>
-                  <span className='text-sm font-medium'>Status</span>
-                  <VendorStatusBadge status={vendor.status} />
-                </div>
-                <div className='flex items-center justify-between'>
                   <span className='text-sm font-medium'>Total Products</span>
-                  <span className='text-sm'>{vendor.products}</span>
+                  <span className='text-sm'>{vendor?.stats.productCount}</span>
                 </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm font-medium'>Total Orders</span>
-                  <span className='text-sm'>{vendor.orders}</span>
+                  <span className='text-sm'>{vendor?.stats.orderCount}</span>
                 </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm font-medium'>Total Revenue</span>
-                  <span className='text-sm'>${vendor.revenue}</span>
+                  <span className='text-sm'>₦{vendor?.stats.totalRevenue}</span>
                 </div>
               </div>
             </div>
           </CardContent>
-        </Card> */}
+        </Card>
 
+        {/*  */}
         <Card className='md:col-span-2'>
           <CardHeader>
             <Tabs defaultValue='products'>
@@ -95,52 +128,44 @@ export default function VendorDetailsPage() {
                           <TableHead>Product</TableHead>
                           <TableHead>Category</TableHead>
                           <TableHead>Price</TableHead>
-                          <TableHead>Stock</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead className='text-right'>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {/* {vendorProducts.map((product) => (
-                          <TableRow key={product.id}>
-                            <TableCell>
-                              <div className='flex items-center gap-3'>
-                                <div className='h-10 w-10 overflow-hidden rounded-md bg-gray-100'>
-                                  <Image
-                                    src={product.image || '/placeholder.svg'}
-                                    alt={product.name}
-                                    className='h-full w-full object-cover'
-                                    width={40}
-                                    height={40}
-                                  />
-                                </div>
-                                <div>
-                                  <div className='font-medium'>
-                                    {product.name}
-                                  </div>
-                                  <div className='text-xs text-muted-foreground'>
-                                    SKU: {product.sku}
-                                  </div>
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>{product.category}</TableCell>
-                            <TableCell>${product.price}</TableCell>
-                            <TableCell>{product.stock}</TableCell>
-                            <TableCell>
-                              <ProductStatusBadge status={product.status} />
-                            </TableCell>
-                            <TableCell className='text-right'>
-                              <Button
-                                variant='ghost'
-                                size='sm'
-                                className='h-8 w-8 p-0'
-                              >
-                                <Eye className='h-4 w-4' />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))} */}
+                        {Array.isArray(vendorProducts?.data)
+                          ? vendorProducts.data.map(
+                              (product: VendorProduct) => (
+                                <TableRow key={product._id}>
+                                  <TableCell>
+                                    <div className='flex items-center gap-3'>
+                                      <div className='h-10 w-10 overflow-hidden rounded-md bg-gray-100'>
+                                        <Image
+                                          src={
+                                            product.images[0] ||
+                                            '/placeholder.svg'
+                                          }
+                                          alt={product.name}
+                                          className='h-full w-full object-cover'
+                                          width={40}
+                                          height={40}
+                                        />
+                                      </div>
+                                      <div>
+                                        <div className='font-medium'>
+                                          {product.name}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className='capitalize'>
+                                    {product.category}
+                                  </TableCell>
+                                  <TableCell>
+                                    ₦{product.basePrice.toLocaleString()}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            )
+                          : null}
                       </TableBody>
                     </Table>
                   </div>
@@ -156,7 +181,6 @@ export default function VendorDetailsPage() {
                           <TableHead>Date</TableHead>
                           <TableHead>Status</TableHead>
                           <TableHead className='text-right'>Amount</TableHead>
-                          <TableHead className='text-right'>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -242,7 +266,7 @@ export default function VendorDetailsPage() {
                       </CardHeader>
                       <CardContent>
                         <div className='space-y-4'>
-                          {vendorProducts.slice(0, 3).map((product, index) => (
+                          {/* {vendorProducts.slice(0, 3).map((product, index) => (
                             <div
                               key={product.id}
                               className='flex items-center gap-4'
@@ -276,7 +300,7 @@ export default function VendorDetailsPage() {
                                 </p>
                               </div>
                             </div>
-                          ))}
+                          ))} */}
                         </div>
                       </CardContent>
                     </Card>
@@ -290,64 +314,3 @@ export default function VendorDetailsPage() {
     </div>
   )
 }
-
-// Sample vendor data
-
-// Sample product data for a vendor
-const vendorProducts = [
-  {
-    id: '1',
-    name: 'Chocolate Cake',
-    sku: 'CAKE-001',
-    image:
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Cakes',
-    price: '35.99',
-    stock: 24,
-    status: 'in-stock' as const,
-  },
-  {
-    id: '2',
-    name: 'Vanilla Cupcakes (6 Pack)',
-    sku: 'CUP-002',
-    image:
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Cupcakes',
-    price: '12.99',
-    stock: 36,
-    status: 'in-stock' as const,
-  },
-  {
-    id: '3',
-    name: 'Birthday Gift Box',
-    sku: 'GIFT-003',
-    image:
-      'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Gift Boxes',
-    price: '49.99',
-    stock: 15,
-    status: 'in-stock' as const,
-  },
-  {
-    id: '4',
-    name: 'Red Velvet Cake',
-    sku: 'CAKE-005',
-    image:
-      'https://images.unsplash.com/photo-1586788680434-30d324626f9c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Cakes',
-    price: '42.99',
-    stock: 8,
-    status: 'low-stock' as const,
-  },
-  {
-    id: '5',
-    name: 'Chocolate Chip Cookies (12 Pack)',
-    sku: 'COOKIE-006',
-    image:
-      'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Cookies',
-    price: '15.99',
-    stock: 0,
-    status: 'out-of-stock' as const,
-  },
-]
