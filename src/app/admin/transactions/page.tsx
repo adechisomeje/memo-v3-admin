@@ -1,9 +1,10 @@
+'use client'
+
 import type React from 'react'
 import {
   Search,
   Filter,
   Download,
-  Eye,
   CreditCard,
   ArrowUp,
   ArrowDown,
@@ -19,13 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
@@ -34,182 +28,31 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-
-// Sample transaction data based on the provided structure
-const transactions = [
-  {
-    _id: '67d0240d57df6738a543cef6',
-    order: {
-      _id: '67d0240d57df6738a543cef2',
-      productDetails: {
-        size: '9 inches',
-        flavours: ['Vanilla'],
-        topping: 'Buttercream',
-        layers: 2,
-      },
-      amount: 18528,
-      status: 'new',
-    },
-    customer: {
-      _id: '67c7118a4491d7591cc1f19f',
-      firstName: 'Mariam',
-      lastName: 'Ajanlekoko',
-      email: 'Ajanlekokomotun@gmail.com',
-    },
-    vendor: {
-      _id: '67c50621177fd2e236ad2c34',
-      businessName: 'Quigley Group',
-      email: 'braxton13@hotmail.com',
-    },
-    amount: 18528,
-    paymentReference: 'MEMO-3d74aceb6f51422390c5000c62aa7ddb',
-    paymentGateway: 'paystack',
-    status: 'pending',
-    type: 'order_payment',
-    currency: 'NGN',
-    createdAt: '2025-03-11T11:52:45.819Z',
-    updatedAt: '2025-03-11T11:52:45.819Z',
-    __v: 0,
-  },
-  {
-    _id: '67d0240d57df6738a543cef7',
-    order: {
-      _id: '67d0240d57df6738a543cef3',
-      productDetails: {
-        size: '12 inches',
-        flavours: ['Chocolate'],
-        topping: 'Fondant',
-        layers: 3,
-      },
-      amount: 25000,
-      status: 'paid',
-    },
-    customer: {
-      _id: '67c7118a4491d7591cc1f19e',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com',
-    },
-    vendor: {
-      _id: '67c50621177fd2e236ad2c35',
-      businessName: 'Sweet Delights',
-      email: 'info@sweetdelights.com',
-    },
-    amount: 25000,
-    paymentReference: 'MEMO-4e85bcdf7f62533491d6111d73bb8eec',
-    paymentGateway: 'paystack',
-    status: 'successful',
-    type: 'order_payment',
-    currency: 'NGN',
-    createdAt: '2025-03-10T15:30:22.456Z',
-    updatedAt: '2025-03-10T15:30:22.456Z',
-    __v: 0,
-  },
-  {
-    _id: '67d0240d57df6738a543cef8',
-    order: {
-      _id: '67d0240d57df6738a543cef4',
-      productDetails: {
-        size: '8 inches',
-        flavours: ['Red Velvet'],
-        topping: 'Cream Cheese',
-        layers: 2,
-      },
-      amount: 15000,
-      status: 'processing',
-    },
-    customer: {
-      _id: '67c7118a4491d7591cc1f19d',
-      firstName: 'Sarah',
-      lastName: 'Johnson',
-      email: 'sarah.j@example.com',
-    },
-    vendor: {
-      _id: '67c50621177fd2e236ad2c36',
-      businessName: 'Cake Masters',
-      email: 'orders@cakemasters.com',
-    },
-    amount: 15000,
-    paymentReference: 'MEMO-5f96cdeg8g73644592e7222e84cc9ffd',
-    paymentGateway: 'paystack',
-    status: 'successful',
-    type: 'order_payment',
-    currency: 'NGN',
-    createdAt: '2025-03-09T09:15:10.789Z',
-    updatedAt: '2025-03-09T09:15:10.789Z',
-    __v: 0,
-  },
-  {
-    _id: '67d0240d57df6738a543cef9',
-    order: {
-      _id: '67d0240d57df6738a543cef5',
-      productDetails: {
-        size: '10 inches',
-        flavours: ['Vanilla', 'Chocolate'],
-        topping: 'Ganache',
-        layers: 4,
-      },
-      amount: 30000,
-      status: 'delivered',
-    },
-    customer: {
-      _id: '67c7118a4491d7591cc1f19c',
-      firstName: 'Michael',
-      lastName: 'Chen',
-      email: 'michael.c@example.com',
-    },
-    vendor: {
-      _id: '67c50621177fd2e236ad2c37',
-      businessName: 'Ajasco Cakes',
-      email: 'info@ajascocakes.com',
-    },
-    amount: 30000,
-    paymentReference: 'MEMO-6g07dehh9h84755603f8333f95dda00e',
-    paymentGateway: 'paystack',
-    status: 'successful',
-    type: 'order_payment',
-    currency: 'NGN',
-    createdAt: '2025-03-08T14:45:33.123Z',
-    updatedAt: '2025-03-08T14:45:33.123Z',
-    __v: 0,
-  },
-  {
-    _id: '67d0240d57df6738a543cefa',
-    order: {
-      _id: '67d0240d57df6738a543cef6',
-      productDetails: {
-        size: '6 inches',
-        flavours: ['Lemon'],
-        topping: 'Meringue',
-        layers: 1,
-      },
-      amount: 12000,
-      status: 'cancelled',
-    },
-    customer: {
-      _id: '67c7118a4491d7591cc1f19b',
-      firstName: 'Emma',
-      lastName: 'Wilson',
-      email: 'emma.w@example.com',
-    },
-    vendor: {
-      _id: '67c50621177fd2e236ad2c38',
-      businessName: 'Fresh Delights',
-      email: 'contact@freshdelights.com',
-    },
-    amount: 12000,
-    paymentReference: 'MEMO-7h18efii0i95866714g9444g06eeb11f',
-    paymentGateway: 'paystack',
-    status: 'failed',
-    type: 'order_payment',
-    currency: 'NGN',
-    createdAt: '2025-03-07T11:20:55.456Z',
-    updatedAt: '2025-03-07T11:20:55.456Z',
-    __v: 0,
-  },
-]
+import { queryKeys } from '@/lib/queries'
+import { getAllTransactions } from '@/api/transactions'
+import { useSession } from 'next-auth/react'
+import { useQuery } from '@tanstack/react-query'
+import TransactionManagementSkeleton from './tnxLoading'
+import {
+  OrderStatusBadgeProps,
+  TransactionMetricCardProps,
+  TransactionStatusBadgeProps,
+  TransactionTypeBadgeProps,
+} from '@/types/types'
 
 export default function TransactionsPage() {
+  const { status } = useSession()
+  const { data: transactionsResponse, isPending } = useQuery({
+    queryKey: [queryKeys.allTransactions],
+    queryFn: () => getAllTransactions(),
+    enabled: status === 'authenticated',
+    staleTime: 5 * 60 * 1000,
+  })
+
+  if (isPending) {
+    return <TransactionManagementSkeleton />
+  }
+
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
@@ -223,19 +66,19 @@ export default function TransactionsPage() {
       <div className='grid gap-6 md:grid-cols-4'>
         <TransactionMetricCard
           title='Total Transactions'
-          value='24,543'
+          value={transactionsResponse?.total.toString() || '0'}
           icon={<CreditCard className='h-5 w-5' />}
           description='All time'
         />
         <TransactionMetricCard
           title='Total Revenue'
-          value='₦1.2M'
+          value='₦500000'
           icon={<ArrowUp className='h-5 w-5' />}
           description='Platform earnings'
         />
         <TransactionMetricCard
           title='Vendor Payouts'
-          value='₦980K'
+          value='₦410000'
           icon={<ArrowDown className='h-5 w-5' />}
           description='Paid to vendors'
         />
@@ -266,7 +109,7 @@ export default function TransactionsPage() {
                 Filter
               </Button>
             </div>
-            <div className='flex items-center gap-2 w-full sm:w-auto'>
+            {/* <div className='flex items-center gap-2 w-full sm:w-auto'>
               <Select defaultValue='newest'>
                 <SelectTrigger className='w-full sm:w-[180px]'>
                   <SelectValue placeholder='Sort by' />
@@ -285,7 +128,7 @@ export default function TransactionsPage() {
               <Button variant='outline' size='icon'>
                 <Download className='h-4 w-4' />
               </Button>
-            </div>
+            </div> */}
           </div>
 
           <div className='rounded-md border'>
@@ -300,11 +143,11 @@ export default function TransactionsPage() {
                   <TableHead>Order Status</TableHead>
                   <TableHead>Payment Status</TableHead>
                   <TableHead className='text-right'>Amount</TableHead>
-                  <TableHead className='text-right'>Actions</TableHead>
+                  {/* <TableHead className='text-right'>Actions</TableHead> */}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transactions.map((transaction) => (
+                {transactionsResponse?.data.map((transaction) => (
                   <TableRow key={transaction._id}>
                     <TableCell className='font-medium'>
                       {transaction.paymentReference}
@@ -342,15 +185,15 @@ export default function TransactionsPage() {
                     </TableCell>
                     <TableCell className='text-right'>
                       <span className='font-medium'>
-                        {transaction.currency}{' '}
-                        {formatAmount(transaction.amount)}
+                        {transaction.currency}
+                        {transaction.amount}
                       </span>
                     </TableCell>
-                    <TableCell className='text-right'>
+                    {/* <TableCell className='text-right'>
                       <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
                         <Eye className='h-4 w-4' />
                       </Button>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>
@@ -359,14 +202,42 @@ export default function TransactionsPage() {
 
           <div className='flex items-center justify-between mt-4'>
             <div className='text-sm text-muted-foreground'>
-              Showing <strong>1</strong> to <strong>10</strong> of{' '}
-              <strong>100</strong> results
+              Showing{' '}
+              <strong>
+                {((transactionsResponse?.page || 1) - 1) *
+                  (transactionsResponse?.limit || 10) +
+                  1}
+              </strong>{' '}
+              to{' '}
+              <strong>
+                {Math.min(
+                  (transactionsResponse?.page || 1) *
+                    (transactionsResponse?.limit || 10),
+                  transactionsResponse?.total || 0
+                )}
+              </strong>{' '}
+              of <strong>{transactionsResponse?.total || 0}</strong> results
             </div>
             <div className='flex items-center gap-2'>
-              <Button variant='outline' size='sm' disabled>
+              <Button
+                variant='outline'
+                size='sm'
+                disabled={
+                  !transactionsResponse?.page || transactionsResponse.page <= 1
+                }
+              >
                 Previous
               </Button>
-              <Button variant='outline' size='sm'>
+              <Button
+                variant='outline'
+                size='sm'
+                disabled={
+                  !transactionsResponse?.total ||
+                  (transactionsResponse?.page || 0) *
+                    (transactionsResponse?.limit || 10) >=
+                    transactionsResponse?.total
+                }
+              >
                 Next
               </Button>
             </div>
@@ -389,21 +260,6 @@ function formatDate(dateString: string): string {
   })
 }
 
-// Helper function to format amount
-function formatAmount(amount: number): string {
-  return (amount / 100).toLocaleString('en-NG', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-}
-
-interface TransactionMetricCardProps {
-  title: string
-  value: string
-  icon: React.ReactNode
-  description: string
-}
-
 function TransactionMetricCard({
   title,
   value,
@@ -424,10 +280,6 @@ function TransactionMetricCard({
       </CardContent>
     </Card>
   )
-}
-
-interface TransactionTypeBadgeProps {
-  type: string
 }
 
 function TransactionTypeBadge({ type }: TransactionTypeBadgeProps) {
@@ -455,10 +307,6 @@ function TransactionTypeBadge({ type }: TransactionTypeBadgeProps) {
   )
 }
 
-interface OrderStatusBadgeProps {
-  status: string
-}
-
 function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
   const variants: Record<string, string> = {
     new: 'bg-blue-100 text-blue-800',
@@ -475,10 +323,6 @@ function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </Badge>
   )
-}
-
-interface TransactionStatusBadgeProps {
-  status: string
 }
 
 function TransactionStatusBadge({ status }: TransactionStatusBadgeProps) {

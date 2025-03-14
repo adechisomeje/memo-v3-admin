@@ -140,13 +140,6 @@ const LoginForm = () => {
           </form>
         </Form>
       </div>
-
-      <p className='text-center text-sm text-[#656565]'>
-        Don&apos;t have an account?{' '}
-        <Link href='/sign-up' className='text-primary'>
-          Create an account
-        </Link>
-      </p>
     </div>
   )
 }

@@ -38,12 +38,13 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { getInitials } from '@/lib/utils'
+import { formatDate, getInitials } from '@/lib/utils'
 import { getAllCustomers } from '@/api/customers'
 import { queryKeys } from '@/lib/queries'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import CustomersPageSkeleton from './customerLoading'
+import { UserMetricCardProps, UserStatusBadgeProps } from '@/types/types'
 
 export default function CustomersPage() {
   const { status } = useSession()
@@ -79,6 +80,11 @@ export default function CustomersPage() {
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
         <h1 className='text-3xl font-bold'>Customer Management</h1>
+        <div className='flex items-center gap-2'>
+          <Button variant='default' size='sm'>
+            Export Data
+          </Button>
+        </div>
       </div>
 
       <div className='grid gap-6 md:grid-cols-4'>
@@ -208,7 +214,7 @@ export default function CustomersPage() {
                         </div>
                       </TableCell>
                       <TableCell className='hidden md:table-cell'>
-                        {new Date(customer.createdAt).toLocaleDateString()}
+                        {formatDate(customer.createdAt)}
                       </TableCell>
                       <TableCell className='hidden md:table-cell'>
                         {customer.isVerified ? 'Yes' : 'No'}
@@ -292,12 +298,6 @@ export default function CustomersPage() {
   )
 }
 
-interface UserMetricCardProps {
-  title: string
-  value: string
-  description: string
-}
-
 function UserMetricCard({ title, value, description }: UserMetricCardProps) {
   return (
     <Card>
@@ -310,10 +310,6 @@ function UserMetricCard({ title, value, description }: UserMetricCardProps) {
       </CardContent>
     </Card>
   )
-}
-
-interface UserStatusBadgeProps {
-  status: 'active' | 'inactive' | 'new'
 }
 
 function UserStatusBadge({ status }: UserStatusBadgeProps) {

@@ -28,6 +28,7 @@ import { queryKeys } from '@/lib/queries'
 import { getAllVendors, OperatingHours, PaymentDetails } from '@/api/vendors'
 import { useSession } from 'next-auth/react'
 import VendorsPageSkeleton from './vendorsLoading'
+import { VendorMetricCardProps, VendorStatusBadgeProps } from '@/types/types'
 
 export default function VendorsPage() {
   const { status } = useSession()
@@ -252,13 +253,6 @@ function getInitials(name: string = ''): string {
     .substring(0, 2)
 }
 
-interface VendorMetricCardProps {
-  title: string
-  value: string
-  icon: React.ReactNode
-  description: string
-}
-
 function VendorMetricCard({
   title,
   value,
@@ -279,10 +273,6 @@ function VendorMetricCard({
       </CardContent>
     </Card>
   )
-}
-
-interface VendorStatusBadgeProps {
-  status: 'active' | 'pending' | 'suspended'
 }
 
 function VendorStatusBadge({ status }: VendorStatusBadgeProps) {

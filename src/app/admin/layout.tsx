@@ -1,21 +1,40 @@
+'use client'
+
 import type React from 'react'
-import type { Metadata } from 'next'
-import { Bell, MessageSquare, Menu } from 'lucide-react'
+
+import { Bell, Menu } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { AdminSidebar } from '@/components/AdminSidebar'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
-export const metadata: Metadata = {
-  title: 'MEMO - Admin Dashboard',
-  description: 'Admin dashboard for MEMO platform',
-}
+import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 interface AdminLayoutProps {
   children: React.ReactNode
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
+  const { data: session } = useSession()
+  // const [loading, setLoading] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  useEffect(() => {
+    if (session?.user) {
+      setFirstName(
+        session.user.firstName
+          ? session.user.firstName.charAt(0).toUpperCase() +
+              session.user.firstName.slice(1)
+          : ''
+      )
+      setLastName(
+        session.user.lastName
+          ? session.user.lastName.charAt(0).toUpperCase() +
+              session.user.lastName.slice(1)
+          : ''
+      )
+    }
+  }, [session])
   return (
     // <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
     <div className='flex min-h-screen bg-background'>
@@ -30,13 +49,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Button variant='ghost' size='icon'>
                 <Bell className='h-5 w-5' />
               </Button>
-              <Button variant='ghost' size='icon'>
-                <MessageSquare className='h-5 w-5' />
-              </Button>
 
               <Avatar>
                 <AvatarImage src='' />
-                <AvatarFallback>KG</AvatarFallback>
+                <AvatarFallback>
+                  {firstName.charAt(0)}
+                  {lastName.charAt(0)}
+                </AvatarFallback>
               </Avatar>
             </div>
           </div>
