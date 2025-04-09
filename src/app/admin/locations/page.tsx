@@ -3,16 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  Plus,
-  Search,
-  Edit,
-  Trash2,
-  MapPin,
-  Globe,
-  Map,
-  Building,
-} from "lucide-react";
+import { Plus, Search, Edit, Globe, Map, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,7 +21,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -69,7 +59,6 @@ import {
   City,
   getAllCountries,
   getAllStates,
-  getAllCities,
   addCountry,
   updateCountry,
   addState,
@@ -77,8 +66,6 @@ import {
   addCity,
   updateCity,
   getCitiesByCountryAndState,
-  getCitiesByCountry,
-  getCitiesByState,
   LocationsListResponse,
 } from "@/api/locations";
 
