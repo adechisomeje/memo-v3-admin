@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -11,8 +11,9 @@ import {
   LogOut,
   ShoppingCart,
   CreditCard,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -22,34 +23,34 @@ import {
   SidebarNavHeader,
   SidebarNavLink,
   SidebarNavList,
-} from '@/components/ui/sidebar'
-import { Dancing_Script } from 'next/font/google'
-import { signOut } from 'next-auth/react'
-import { useState } from 'react'
+} from "@/components/ui/sidebar";
+import { Dancing_Script } from "next/font/google";
+import { signOut } from "next-auth/react";
+import { useState } from "react";
 
 const dancingScript = Dancing_Script({
-  subsets: ['latin'],
-  weight: ['700'],
-  display: 'swap',
-})
+  subsets: ["latin"],
+  weight: ["700"],
+  display: "swap",
+});
 
 export function AdminSidebar() {
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const pathname = usePathname()
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
-    <Sidebar className='hidden md:flex'>
-      <SidebarHeader className='border-b px-6 py-3'>
-        <Link href='/admin' className={dancingScript.className}>
+    <Sidebar className="hidden md:flex">
+      <SidebarHeader className="border-b px-6 py-3">
+        <Link href="/admin" className={dancingScript.className}>
           MEMO ADMIN
         </Link>
       </SidebarHeader>
-      <SidebarContent className='flex flex-col py-2'>
+      <SidebarContent className="flex flex-col py-2">
         <SidebarNav>
           <SidebarNavList>
-            <SidebarNavLink href='/admin' active={pathname === '/admin'}>
-              <LayoutDashboard className='h-4 w-4' />
+            <SidebarNavLink href="/admin" active={pathname === "/admin"}>
+              <LayoutDashboard className="h-4 w-4" />
               <span>Dashboard</span>
             </SidebarNavLink>
           </SidebarNavList>
@@ -59,31 +60,31 @@ export function AdminSidebar() {
           <SidebarNavHeader>Marketplace</SidebarNavHeader>
           <SidebarNavList>
             <SidebarNavLink
-              href='/admin/customers'
-              active={pathname === '/admin/customers'}
+              href="/admin/customers"
+              active={pathname === "/admin/customers"}
             >
-              <Users className='h-4 w-4' />
+              <Users className="h-4 w-4" />
               <span>Customers</span>
             </SidebarNavLink>
             <SidebarNavLink
-              href='/admin/vendors'
-              active={pathname === '/admin/vendors'}
+              href="/admin/vendors"
+              active={pathname === "/admin/vendors"}
             >
-              <Store className='h-4 w-4' />
+              <Store className="h-4 w-4" />
               <span>Vendors</span>
             </SidebarNavLink>
             <SidebarNavLink
-              href='/admin/products'
-              active={pathname === '/admin/products'}
+              href="/admin/products"
+              active={pathname === "/admin/products"}
             >
-              <ShoppingBag className='h-4 w-4' />
+              <ShoppingBag className="h-4 w-4" />
               <span>Products</span>
             </SidebarNavLink>
             <SidebarNavLink
-              href='/admin/orders'
-              active={pathname === '/admin/orders'}
+              href="/admin/orders"
+              active={pathname === "/admin/orders"}
             >
-              <ShoppingCart className='h-4 w-4' />
+              <ShoppingCart className="h-4 w-4" />
               <span>Orders</span>
             </SidebarNavLink>
           </SidebarNavList>
@@ -93,10 +94,10 @@ export function AdminSidebar() {
           <SidebarNavHeader>Finance</SidebarNavHeader>
           <SidebarNavList>
             <SidebarNavLink
-              href='/admin/transactions'
-              active={pathname === '/admin/transactions'}
+              href="/admin/transactions"
+              active={pathname === "/admin/transactions"}
             >
-              <CreditCard className='h-4 w-4' />
+              <CreditCard className="h-4 w-4" />
               <span>Transactions</span>
             </SidebarNavLink>
             {/* <SidebarNavLink
@@ -133,42 +134,49 @@ export function AdminSidebar() {
           <SidebarNavHeader>Settings</SidebarNavHeader>
           <SidebarNavList>
             <SidebarNavLink
-              href='/admin/settings'
-              active={pathname === '/admin/settings'}
+              href="/admin/locations"
+              active={pathname === "/admin/locations"}
             >
-              <Settings className='h-4 w-4' />
+              <MapPin className="h-4 w-4" />
+              <span>Locations</span>
+            </SidebarNavLink>
+            <SidebarNavLink
+              href="/admin/settings"
+              active={pathname === "/admin/settings"}
+            >
+              <Settings className="h-4 w-4" />
               <span> Settings</span>
             </SidebarNavLink>
           </SidebarNavList>
         </SidebarNav>
       </SidebarContent>
-      <SidebarFooter className='border-t p-4'>
+      <SidebarFooter className="border-t p-4">
         <Button
-          variant='ghost'
-          className='w-full justify-start text-rose-600'
+          variant="ghost"
+          className="w-full justify-start text-rose-600"
           asChild
         >
-          <LogOut className='mr-2 h-4 w-4' />
+          <LogOut className="mr-2 h-4 w-4" />
           <Button
-            className='w-full cursor-pointer'
-            type='submit'
+            className="w-full cursor-pointer"
+            type="submit"
             onClick={async () => {
-              setLoading(true)
+              setLoading(true);
               const data = await signOut({
                 redirect: false,
-                callbackUrl: '/',
-              })
-              setLoading(false)
+                callbackUrl: "/",
+              });
+              setLoading(false);
 
               if (data.url) {
-                router.push(data.url)
+                router.push(data.url);
               }
             }}
           >
-            {loading ? 'Logging out...' : 'Log Out'}
+            {loading ? "Logging out..." : "Log Out"}
           </Button>
         </Button>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
