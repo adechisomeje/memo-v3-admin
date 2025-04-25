@@ -78,7 +78,7 @@ export default function TransactionsPage() {
         <TransactionMetricCard
           title="Vendor Payouts"
           value="₦410000"
-          icon={<ArrowDown className="h-5 w-5" />}
+          icon={<ArrowDown className="h-5 w-5 " />}
           description="Paid to vendors"
         />
       </div>
