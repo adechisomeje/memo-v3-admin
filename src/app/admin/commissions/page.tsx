@@ -3,16 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  Search,
-  Edit,
-  Save,
-  Percent,
-  Tag,
-  Check,
-  X,
-  AlertCircle,
-} from "lucide-react";
+import { Search, Edit, Save, Percent, Tag, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -50,13 +41,6 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -65,7 +49,6 @@ import { queryKeys } from "@/lib/queries";
 import {
   CommissionSetting,
   getAllCommissionSettings,
-  getCommissionSettingByCategory,
   updateCommissionSetting,
   batchUpdateCommissionSettings,
 } from "@/api/commissions";
