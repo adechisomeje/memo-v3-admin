@@ -12,6 +12,7 @@ import {
   ShoppingCart,
   CreditCard,
   MapPin,
+  Percent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,6 +108,19 @@ export function AdminSidebar() {
               <CreditCard className='h-4 w-4' />
               <span>Earnings</span>
             </SidebarNavLink> */}
+          </SidebarNavList>
+        </SidebarNav>
+
+        <SidebarNav>
+          <SidebarNavHeader>Revenue</SidebarNavHeader>
+          <SidebarNavList>
+            <SidebarNavLink
+              href="/admin/commissions"
+              active={pathname === "/admin/commissions"}
+            >
+              <Percent className="h-4 w-4" />
+              <span>Commissions</span>
+            </SidebarNavLink>
           </SidebarNavList>
         </SidebarNav>
 

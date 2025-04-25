@@ -8,5 +8,9 @@ export const queryKeys = {
     countries: ['locations', 'countries'] as const,
     states: ['locations', 'states'] as const,
     cities: ['locations', 'cities'] as const,
-  }
+  },
+  commissions: {
+  all: ['commissions', 'all'] as const,
+  byCategory: (category: string) => ['commissions', 'category', category] as const,
+},
 } as const
