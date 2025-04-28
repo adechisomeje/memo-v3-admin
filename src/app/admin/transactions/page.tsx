@@ -83,7 +83,7 @@ export default function TransactionsPage() {
         />
         <TransactionMetricCard
           title="Commissions"
-          value={transactionsResponse?.totalCommissions?.toString() || "0"}
+          value={transactionsResponse?.totalCommission?.toString() || "0"}
           icon={<ArrowUp className="h-5 w-5 " />}
           description="charged to vendors"
         />

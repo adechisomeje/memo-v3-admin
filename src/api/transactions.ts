@@ -57,7 +57,7 @@ type TransactionsResponse = {
   message: string
   totalRevenue: number,
   totalVendorPayouts: number,
-  totalCommissions: number,
+  totalCommission: number,
 }
 
 export const getAllTransactions = async () => {
