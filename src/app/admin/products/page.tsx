@@ -42,8 +42,6 @@ export default function ProductsPage() {
   const { status } = useSession();
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
-
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const {
