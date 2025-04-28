@@ -25,6 +25,7 @@ type ProductDetails = {
 }
 
 type Order = {
+  commissionAmount: number
   _id: string
   productDetails: ProductDetails
   amount: number
@@ -54,6 +55,9 @@ type TransactionsResponse = {
   page: number
   limit: number
   message: string
+  totalRevenue: number,
+  totalVendorPayouts: number,
+  totalCommissions: number,
 }
 
 export const getAllTransactions = async () => {

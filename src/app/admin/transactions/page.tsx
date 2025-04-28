@@ -65,21 +65,27 @@ export default function TransactionsPage() {
       <div className="grid gap-6 md:grid-cols-4">
         <TransactionMetricCard
           title="Total Transactions"
-          value={transactionsResponse?.total.toString() || "0"}
+          value={transactionsResponse?.total?.toString() || "0"}
           icon={<CreditCard className="h-5 w-5" />}
           description="All time"
         />
         <TransactionMetricCard
           title="Total Revenue"
-          value="₦500000"
+          value={transactionsResponse?.totalRevenue?.toString() || "0"}
           icon={<ArrowUp className="h-5 w-5" />}
           description="Platform earnings"
         />
         <TransactionMetricCard
           title="Vendor Payouts"
-          value="₦410000"
+          value={transactionsResponse?.totalVendorPayouts?.toString() || "0"}
           icon={<ArrowDown className="h-5 w-5 " />}
           description="Paid to vendors"
+        />
+        <TransactionMetricCard
+          title="Commissions"
+          value={transactionsResponse?.totalCommissions?.toString() || "0"}
+          icon={<ArrowUp className="h-5 w-5 " />}
+          description="charged to vendors"
         />
       </div>
 
@@ -142,6 +148,7 @@ export default function TransactionsPage() {
 
                   <TableHead> Status</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Commission</TableHead>
                   {/* <TableHead className='text-right'>Actions</TableHead> */}
                 </TableRow>
               </TableHeader>
@@ -184,6 +191,12 @@ export default function TransactionsPage() {
                       <span className="font-medium">
                         {transaction.currency}
                         {transaction.amount}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <span className="font-medium">
+                        {transaction.currency}
+                        {transaction.order?.commissionAmount || 0}
                       </span>
                     </TableCell>
                     {/* <TableCell className='text-right'>
@@ -306,7 +319,7 @@ function TransactionTypeBadge({ type }: TransactionTypeBadgeProps) {
 
 function TransactionStatusBadge({ status }: TransactionStatusBadgeProps) {
   const variants: Record<string, string> = {
-    successful: "bg-green-100 text-green-800",
+    success: "bg-green-100 text-green-800",
     pending: "bg-yellow-100 text-yellow-800",
     failed: "bg-red-100 text-red-800",
   };
