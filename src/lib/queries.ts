@@ -13,4 +13,6 @@ export const queryKeys = {
   all: ['commissions', 'all'] as const,
   byCategory: (category: string) => ['commissions', 'category', category] as const,
 },
+allProducts: ['allProducts'] as const,
+productsByCategory: (category: string) => ['products', 'category', category] as const,
 } as const
