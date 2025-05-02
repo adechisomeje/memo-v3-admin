@@ -78,7 +78,7 @@ interface Vendor {
   businessVerification: BusinessVerification;
 }
 
-export function VendorVerificationSkeleton() {
+const VendorVerificationSkeleton = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -160,7 +160,7 @@ export function VendorVerificationSkeleton() {
       </Card>
     </div>
   );
-}
+};
 
 export default function VendorVerificationPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -179,7 +179,7 @@ export default function VendorVerificationPage() {
   });
 
   const vendors = (vendorsResponse?.data || []) as Array<Vendor>;
-  const totalVendors = vendorsResponse?.total || 0;
+  //   const totalVendors = vendorsResponse?.total || 0;
   const totalPages = Math.ceil(
     (vendorsResponse?.total || 0) / (vendorsResponse?.limit || 10)
   );
@@ -680,7 +680,7 @@ export default function VendorVerificationPage() {
               <DialogTitle>Reject Vendor Verification</DialogTitle>
               <DialogDescription>
                 Please provide a reason for rejecting{" "}
-                {selectedVendor?.businessName}'s verification request. This
+                {selectedVendor?.businessName}&apos;s verification request. This
                 reason will be visible to the vendor.
               </DialogDescription>
             </DialogHeader>
