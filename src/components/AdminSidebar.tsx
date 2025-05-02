@@ -13,6 +13,7 @@ import {
   CreditCard,
   MapPin,
   Percent,
+  Verified,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -147,6 +148,13 @@ export function AdminSidebar() {
         <SidebarNav>
           <SidebarNavHeader>Settings</SidebarNavHeader>
           <SidebarNavList>
+            <SidebarNavLink
+              href="/admin/verification"
+              active={pathname === "/admin/verification"}
+            >
+              <Verified className="h-4 w-4" />
+              <span>Verification</span>
+            </SidebarNavLink>
             <SidebarNavLink
               href="/admin/locations"
               active={pathname === "/admin/locations"}
