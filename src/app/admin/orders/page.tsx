@@ -94,7 +94,6 @@ export default function OrdersPage() {
   const {
     data: ordersResponse,
     isPending,
-    isFetching,
   } = useQuery({
     queryKey: [queryKeys.allOrders, { page }],
     queryFn: () => getAllOrders(page),
@@ -160,14 +159,6 @@ export default function OrdersPage() {
       total,
       ...statusCounts,
     };
-  }, [ordersResponse]);
-
-  // Pagination info
-  const pagination = useMemo(() => {
-    if (!ordersResponse) return { page: 1, limit: 10, total: 0 };
-
-    const { page, limit, total } = ordersResponse;
-    return { page, limit, total };
   }, [ordersResponse]);
 
   if (isPending) {

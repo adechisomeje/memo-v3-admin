@@ -70,7 +70,6 @@ export default function AdminDashboard() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const metrics = metricsResponse?.data.metrics;
   const recentData = metricsResponse?.data.recentData;
   const topPerformers = metricsResponse?.data.topPerformers;
   const totalRevenue = transactionsResponse?.totalRevenue || 0;

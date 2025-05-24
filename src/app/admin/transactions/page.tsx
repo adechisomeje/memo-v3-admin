@@ -38,7 +38,6 @@ import {
   TransactionStatusBadgeProps,
   TransactionTypeBadgeProps,
 } from "@/types/types";
-import SearchFilter from "@/components/ui/search-filter";
 import { useState } from "react";
 
 export default function TransactionsPage() {
@@ -50,9 +49,7 @@ export default function TransactionsPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const [filteredTransactions, setFilteredTransactions] = useState(
-    transactionsResponse?.data || []
-  );
+  const [filteredTransactions] = useState(transactionsResponse?.data || []);
 
   if (isPending) {
     return <TransactionManagementSkeleton />;
