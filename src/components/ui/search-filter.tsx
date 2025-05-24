@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
-interface SearchFilterProps {
-  data: any[];
-  onFilter: (filteredData: any[]) => void;
+interface SearchFilterProps<T> {
+  data: T[];
+  onFilter: (filteredData: T[]) => void;
   placeholder?: string;
-  additionalFilters?: (item: any) => boolean;
+  additionalFilters?: (item: T) => boolean;
 }
 
-const SearchFilter: React.FC<SearchFilterProps> = ({
+const SearchFilter = <T extends { businessName: string; email: string; firstName: string; lastName: string }>({
   data,
   onFilter,
   placeholder = 'Search...',
   additionalFilters,
-}) => {
+}: SearchFilterProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {

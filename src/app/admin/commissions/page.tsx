@@ -118,7 +118,7 @@ export default function CommissionsPage() {
       setIsEditDialogOpen(false);
       setEditingCommission(null);
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error("Failed to update commission setting");
     },
   });
@@ -133,7 +133,7 @@ export default function CommissionsPage() {
       toast.success("Commission settings updated for all categories");
       setIsBatchDialogOpen(false);
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error("Failed to update commission settings");
     },
   });

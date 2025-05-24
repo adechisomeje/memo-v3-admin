@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Store,
@@ -49,7 +49,6 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import SearchFilter from "@/components/ui/search-filter";
 
 // Type definition for business verification
 interface BusinessVerification {
@@ -201,6 +200,7 @@ export default function VendorVerificationPage() {
       toast.error("Failed to approve vendor verification", {
         description: "Please try again.",
       });
+      console.error("Error approving vendor:", error);
     },
   });
 
@@ -225,6 +225,7 @@ export default function VendorVerificationPage() {
       toast.error("Failed to reject vendor verification", {
         description: "Please try again.",
       });
+      console.error("Error rejecting vendor:", error);
     },
   });
 
@@ -249,39 +250,34 @@ export default function VendorVerificationPage() {
     });
   };
 
-  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
+  // Filter vendors based on tab
+  const filteredVendors = vendors.filter((vendor) => {
+    const matchesSearch =
+      searchTerm === "" ||
+      vendor.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      vendor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${vendor.firstName} ${vendor.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
-  useEffect(() => {
-    const filtered = vendors.filter((vendor) => {
-      const matchesSearch =
-        searchTerm === "" ||
-        vendor.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vendor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        `${vendor.firstName} ${vendor.lastName}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+    if (!matchesSearch) return false;
 
-      if (!matchesSearch) return false;
-
-      if (activeTab === "verified") {
-        return vendor.businessVerification?.isVerified === true;
-      } else if (activeTab === "rejected") {
-        return (
-          vendor.businessVerification?.rejectionReason !== null &&
-          vendor.businessVerification?.rejectionReason !== undefined &&
-          vendor.businessVerification?.rejectionReason !== ""
-        );
-      } else {
-        return (
-          vendor.businessVerification?.isVerified === false &&
-          (!vendor.businessVerification?.rejectionReason ||
-            vendor.businessVerification?.rejectionReason === "")
-        );
-      }
-    });
-
-    setFilteredVendors(filtered);
-  }, [vendors, searchTerm, activeTab]);
+    if (activeTab === "verified") {
+      return vendor.businessVerification?.isVerified === true;
+    } else if (activeTab === "rejected") {
+      return (
+        vendor.businessVerification?.rejectionReason !== null &&
+        vendor.businessVerification?.rejectionReason !== undefined &&
+        vendor.businessVerification?.rejectionReason !== ""
+      );
+    } else {
+      return (
+        vendor.businessVerification?.isVerified === false &&
+        (!vendor.businessVerification?.rejectionReason ||
+          vendor.businessVerification?.rejectionReason === "")
+      );
+    }
+  });
 
   // Helper function to get initials from name
   function getInitials(name: string = ""): string {
