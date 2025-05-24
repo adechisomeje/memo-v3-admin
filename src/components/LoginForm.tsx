@@ -43,14 +43,11 @@ const LoginForm = () => {
   async function onSubmit(values: SignInFormValues) {
     setLoading(true)
     try {
-      console.log('Attempting to sign in with:', values.email)
       const res = await signIn('signIn', {
         email: values.email,
         password: values.password,
         redirect: false,
       })
-
-      console.log('Sign in response:', res)
 
       if (res?.error) {
         toast.error(res.error)
@@ -62,7 +59,6 @@ const LoginForm = () => {
         router.refresh()
       }
     } catch (error) {
-      console.error('Sign in error:', error)
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)

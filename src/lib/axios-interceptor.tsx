@@ -10,18 +10,8 @@ export default function AxiosInterceptor() {
   useEffect(() => {
     const requestInterceptor = axiosClient.interceptors.request.use(
       async (config) => {
-        // Add some debugging
-        console.log('Session state:', {
-          status,
-          accessToken: session?.accessToken,
-        })
-
         if (status === 'authenticated' && session?.accessToken) {
-          // Make sure to set the header for every request
           config.headers['Authorization'] = `Bearer ${session.accessToken}`
-          console.log('Added auth header:', config.headers['Authorization'])
-        } else {
-          console.log('No token available for request')
         }
         return config
       },
@@ -34,11 +24,7 @@ export default function AxiosInterceptor() {
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          console.error('Authorization error:', {
-            status: error.response?.status,
-            data: error.response?.data,
-            headers: error.config?.headers, // Log the headers that were sent
-          })
+          // Handle authorization error (e.g., redirect to login)
         }
         return Promise.reject(error)
       }

@@ -184,7 +184,6 @@ export default function LocationsPage() {
     },
     onError: (error) => {
       toast.error("Failed to add country");
-      console.error(error);
     },
   });
 
@@ -206,7 +205,6 @@ export default function LocationsPage() {
     },
     onError: (error) => {
       toast.error("Failed to update country");
-      console.error(error);
     },
   });
 
@@ -221,7 +219,6 @@ export default function LocationsPage() {
     },
     onError: (error) => {
       toast.error("Failed to add state");
-      console.error(error);
     },
   });
 
@@ -243,7 +240,6 @@ export default function LocationsPage() {
     },
     onError: (error) => {
       toast.error("Failed to update state");
-      console.error(error);
     },
   });
 
@@ -258,7 +254,6 @@ export default function LocationsPage() {
     },
     onError: (error) => {
       toast.error("Failed to add city");
-      console.error(error);
     },
   });
 
@@ -275,7 +270,6 @@ export default function LocationsPage() {
     },
     onError: (error) => {
       toast.error("Failed to update city");
-      console.error(error);
     },
   });
 

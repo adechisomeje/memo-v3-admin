@@ -37,7 +37,6 @@ export default function CustomerOrdersPage() {
     queryKey: ['customerDetails', id],
     queryFn: () => getCustomerDetails(id as string),
   })
-  console.log(customerDetails)
   return (
     <div className='space-y-6'>
       <div className='flex items-center gap-4'>

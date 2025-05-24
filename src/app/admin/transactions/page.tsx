@@ -38,6 +38,8 @@ import {
   TransactionStatusBadgeProps,
   TransactionTypeBadgeProps,
 } from "@/types/types";
+import SearchFilter from "@/components/ui/search-filter";
+import { useState } from "react";
 
 export default function TransactionsPage() {
   const { status } = useSession();
@@ -47,6 +49,10 @@ export default function TransactionsPage() {
     enabled: status === "authenticated",
     staleTime: 5 * 60 * 1000,
   });
+
+  const [filteredTransactions, setFilteredTransactions] = useState(
+    transactionsResponse?.data || []
+  );
 
   if (isPending) {
     return <TransactionManagementSkeleton />;
@@ -153,7 +159,7 @@ export default function TransactionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transactionsResponse?.data.map((transaction) => (
+                {filteredTransactions.map((transaction) => (
                   <TableRow key={transaction._id}>
                     <TableCell className="font-medium">
                       {transaction.paymentReference}
@@ -276,6 +282,8 @@ function TransactionMetricCard({
   icon,
   description,
 }: TransactionMetricCardProps) {
+  const formattedValue = parseFloat(value).toLocaleString();
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -285,7 +293,7 @@ function TransactionMetricCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="text-2xl font-bold">{formattedValue}</div>
         <div className="mt-1 text-xs text-muted-foreground">{description}</div>
       </CardContent>
     </Card>

@@ -120,7 +120,6 @@ export default function CommissionsPage() {
     },
     onError: (error) => {
       toast.error("Failed to update commission setting");
-      console.error(error);
     },
   });
 
@@ -136,7 +135,6 @@ export default function CommissionsPage() {
     },
     onError: (error) => {
       toast.error("Failed to update commission settings");
-      console.error(error);
     },
   });
 

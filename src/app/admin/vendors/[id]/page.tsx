@@ -48,8 +48,6 @@ export default function VendorDetailsPage() {
     queryFn: () => getVendorProducts(id as string),
   })
 
-  console.log(vendorProducts)
-
   if (isPending) {
     return <div>Loading...</div>
   }

@@ -1,12 +1,11 @@
 'use client'
 
 import type React from 'react'
-import { MoreHorizontal, Search, Filter, Eye, Store, X } from 'lucide-react'
+import { MoreHorizontal, Filter, Eye, Store, X } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -44,9 +43,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import SearchFilter from '@/components/ui/search-filter'
 
 export default function VendorsPage() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [filteredVendors, setFilteredVendors] = useState<typeof vendors>([])
   const { status } = useSession()
   const { data: vendorsResponse, isPending } = useQuery({
     queryKey: [queryKeys.allVendors, currentPage],
@@ -55,39 +56,52 @@ export default function VendorsPage() {
     staleTime: 5 * 60 * 1000,
   })
 
+  // Memoized vendors variable
+  const vendors = useMemo(() => {
+    return (vendorsResponse?.data || []) as Array<{
+      _id: string
+      country: string
+      state: string
+      city: string
+      businessName: string
+      instagram: string
+      firstName: string
+      lastName: string
+      phone: string
+      email: string
+      businessAddress: string
+      operatingHours: OperatingHours
+      paymentDetails: PaymentDetails
+      stats: Stats
+      profilePicture: string
+      isVerified: boolean
+      role: 'VENDOR' | 'CUSTOMER' | 'ADMIN'
+      productCategories: []
+      cityDeliveryPrices: []
+      createdAt: string
+      updatedAt: string
+      __v: number
+    }>
+  }, [vendorsResponse])
+
+  useEffect(() => {
+    setFilteredVendors(vendors)
+  }, [vendors])
+
   // Display the skeleton loading component when data is being fetched
   if (isPending) {
     return <VendorsPageSkeleton />
   }
 
-  console.log(vendorsResponse)
-
-  const vendors = (vendorsResponse?.data || []) as Array<{
-    _id: string
-    country: string
-    state: string
-    city: string
-    businessName: string
-    instagram: string
-    firstName: string
-    lastName: string
-    phone: string
-    email: string
-    businessAddress: string
-    operatingHours: OperatingHours
-    paymentDetails: PaymentDetails
-    stats: Stats
-    profilePicture: string
-    isVerified: boolean
-    role: 'VENDOR' | 'CUSTOMER' | 'ADMIN'
-    productCategories: []
-    cityDeliveryPrices: []
-    createdAt: string
-    updatedAt: string
-    __v: number
-  }>
-
+  // Calculate metrics dynamically based on the vendors data
   const totalVendors = vendorsResponse?.total || 0
+  const pendingApproval = vendors.filter(
+    (vendor) => !vendor.isVerified
+  ).length
+  const subscribedVendors = vendors.filter(
+    (vendor) => vendor.stats.totalRevenue > 0
+  ).length
+
   const totalPages = Math.ceil(
     (vendorsResponse?.total || 0) / (vendorsResponse?.limit || 10)
   )
@@ -153,13 +167,13 @@ export default function VendorsPage() {
         /> */}
         <VendorMetricCard
           title='Pending Approval'
-          value='0'
+          value={`${pendingApproval}`}
           icon={<Store className='h-5 w-5' />}
           description='Awaiting approval for withdrawal'
         />
         <VendorMetricCard
           title='Subscribed'
-          value='0'
+          value={`${subscribedVendors}`}
           icon={<Store className='h-5 w-5' />}
           description='Subscribed to the platform'
         />
@@ -172,14 +186,11 @@ export default function VendorsPage() {
         <CardContent>
           <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4'>
             <div className='flex items-center gap-2 w-full sm:w-auto'>
-              <div className='relative w-full sm:w-[280px]'>
-                <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
-                <Input
-                  type='search'
-                  placeholder='Search vendors...'
-                  className='w-full pl-8'
-                />
-              </div>
+              <SearchFilter
+                data={vendors}
+                onFilter={setFilteredVendors}
+                placeholder='Search vendors...'
+              />
               <Button variant='outline' size='sm'>
                 <Filter className='mr-2 h-4 w-4' />
                 Filter
@@ -208,7 +219,7 @@ export default function VendorsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {vendors.map((vendor) => (
+                {filteredVendors.map((vendor) => (
                   <TableRow key={vendor._id}>
                     <TableCell>
                       <input
