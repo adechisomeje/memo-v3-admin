@@ -90,6 +90,30 @@ export default function VendorDetailsPage() {
               </div>
 
               <div className='pt-4 flex flex-col gap-2'>
+              <div className='flex items-center justify-between'>
+                  <span className='text-sm font-medium'> Country</span>
+                  <span className='text-sm'>{vendor?.country}</span>
+                </div>
+                              <div className='flex items-center justify-between'>
+                  <span className='text-sm font-medium'>Firstname</span>
+                  <span className='text-sm'>{vendor?.firstName}</span>
+                </div>
+                              <div className='flex items-center justify-between'>
+                  <span className='text-sm font-medium'> Lastname</span>
+                  <span className='text-sm'>{vendor?.lastName}</span>
+                </div>
+                              <div className='flex items-center justify-between'>
+                  <span className='text-sm font-medium'>State</span>
+                  <span className='text-sm'>{vendor?.state}</span>
+                </div>
+                <div className='flex items-center justify-between'>
+                  <span className='text-sm font-medium'>Business Address</span>
+                  <span className='text-sm'>{vendor?.businessAddress}</span>
+                </div>
+                <div className='flex items-center justify-between'>
+                  <span className='text-sm font-medium'>Phone Number</span>
+                  <span className='text-sm'>{vendor?.phone}</span>
+                </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm font-medium'>Total Products</span>
                   <span className='text-sm'>{vendor?.stats.productCount}</span>
@@ -115,6 +139,7 @@ export default function VendorDetailsPage() {
                 <TabsTrigger value='products'>Products</TabsTrigger>
                 <TabsTrigger value='orders'>Orders</TabsTrigger>
                 <TabsTrigger value='performance'>Performance</TabsTrigger>
+                <TabsTrigger value='delivery-zones'>Delivery Zones</TabsTrigger>
               </TabsList>
 
               <CardContent>
@@ -304,6 +329,42 @@ export default function VendorDetailsPage() {
                     </Card>
                   </div>
                 </TabsContent>
+                <TabsContent value='delivery-zones' className='mt-0'>
+  <div className='rounded-md border'>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>City</TableHead>
+          <TableHead>Delivery Price</TableHead>
+          <TableHead>Date Added</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.isArray(vendor?.cityDeliveryPrices) &&
+        vendor.cityDeliveryPrices.length > 0 ? (
+          vendor.cityDeliveryPrices.map((entry, index) => (
+            <TableRow key={index}>
+              <TableCell>{entry.city}</TableCell>
+              <TableCell>₦{entry.deliveryPrice.toLocaleString()}</TableCell>
+              <TableCell>
+                {new Date(entry.createdAt).toLocaleDateString()}
+              </TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={3} className='text-center text-gray-500'>
+              No delivery zones configured.
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  </div>
+</TabsContent>
+
+
+
               </CardContent>
             </Tabs>
           </CardHeader>
