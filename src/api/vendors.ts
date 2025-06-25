@@ -43,6 +43,36 @@ export interface VendorResponse {
   __v: number
 }
 
+// New interfaces for deletion requests
+export interface DeletionRequest {
+  _id: string
+  businessName: string
+  firstName: string
+  lastName: string
+  phone: string
+  email: string
+  createdAt: string
+  deletionReason: string
+  deletionRequestedAt: string
+}
+
+export interface DeletionRequestDetail extends DeletionRequest {
+  country: string
+  state: string
+  city: string
+  businessAddress: string
+  updatedAt: string
+}
+
+export interface DeletedVendor {
+  _id: string
+  businessName: string
+  email: string
+  isActive: boolean
+  isDeleted: boolean
+  deletedAt: string
+}
+
 interface VendorProduct {
   _id: string
   name: string
@@ -56,11 +86,12 @@ type VendorOrder = {
   orderId: string
   customerName: string
   customerEmail: string
-  date: string // You can use `Date` if you plan to parse it into a Date object
-  status: 'new' | 'processing' | 'shipped' | 'delivered' | 'cancelled' // Adjust based on possible statuses
+  date: string
+  status: 'new' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
   amount: number
 }
 
+// Existing functions
 export async function getAllVendors(page: number = 1) {
   const response = await axiosClient.get<ApiResponse<VendorResponse>>(
     `/admin/vendors?page=${page}`
@@ -92,6 +123,28 @@ export async function getVendorOrders(vendorId: string) {
 export async function getVendorPerformance(vendorId: string) {
   const response = await axiosClient.get<ApiResponse<VendorProduct>>(
     `/admin/vendors/${vendorId}/orders`
+  )
+  return response.data
+}
+
+// New deletion request functions
+export async function getDeletionRequests() {
+  const response = await axiosClient.get<ApiResponse<DeletionRequest[]>>(
+    '/admin/vendors/deletion-requests'
+  )
+  return response.data
+}
+
+export async function getOneDeletionRequest(vendorId: string) {
+  const response = await axiosClient.get<ApiResponse<DeletionRequestDetail>>(
+    `/admin/vendors/${vendorId}/deletion-request`
+  )
+  return response.data
+}
+
+export async function deleteVendorAccount(vendorId: string) {
+  const response = await axiosClient.delete<ApiResponse<DeletedVendor>>(
+    `/admin/vendors/${vendorId}`
   )
   return response.data
 }

@@ -14,6 +14,7 @@ import {
   MapPin,
   Percent,
   Verified,
+  UserX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -102,13 +103,6 @@ export function AdminSidebar() {
               <CreditCard className="h-4 w-4" />
               <span>Transactions</span>
             </SidebarNavLink>
-            {/* <SidebarNavLink
-              href='/admin/payouts'
-              active={pathname === '/admin/payouts'}
-            >
-              <CreditCard className='h-4 w-4' />
-              <span>Earnings</span>
-            </SidebarNavLink> */}
           </SidebarNavList>
         </SidebarNav>
 
@@ -125,26 +119,6 @@ export function AdminSidebar() {
           </SidebarNavList>
         </SidebarNav>
 
-        {/* <SidebarNav>
-          <SidebarNavHeader>Insights</SidebarNavHeader>
-          <SidebarNavList>
-            <SidebarNavLink
-              href='/admin/analytics'
-              active={pathname === '/admin/analytics'}
-            >
-              <BarChart3 className='h-4 w-4' />
-              <span>Analytics</span>
-            </SidebarNavLink>
-            <SidebarNavLink
-              href='/admin/reports'
-              active={pathname === '/admin/reports'}
-            >
-              <BarChart3 className='h-4 w-4' />
-              <span>Reports</span>
-            </SidebarNavLink>
-          </SidebarNavList>
-        </SidebarNav> */}
-
         <SidebarNav>
           <SidebarNavHeader>Settings</SidebarNavHeader>
           <SidebarNavList>
@@ -154,6 +128,13 @@ export function AdminSidebar() {
             >
               <Verified className="h-4 w-4" />
               <span>Verification</span>
+            </SidebarNavLink>
+            <SidebarNavLink
+              href="/admin/deletion-requests"
+              active={pathname === "/admin/deletion-requests"}
+            >
+              <UserX className="h-4 w-4" />
+              <span>Deletion Requests</span>
             </SidebarNavLink>
             <SidebarNavLink
               href="/admin/locations"
