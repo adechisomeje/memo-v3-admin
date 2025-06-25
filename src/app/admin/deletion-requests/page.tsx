@@ -7,14 +7,11 @@ import {
   Search,
   Filter,
   Trash2,
-  X,
   AlertTriangle,
   Clock,
-  ChevronRight,
   Loader2,
   Eye,
 } from "lucide-react";
-import Link from "next/link";
 import { queryKeys } from "@/lib/queries";
 import {
   getDeletionRequests,
@@ -36,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -553,9 +550,9 @@ export default function DeletionRequestsPage() {
           <DialogHeader>
             <DialogTitle>Confirm Account Deletion</DialogTitle>
             <DialogDescription>
-              Are you sure you want to permanently delete{" "}
-              {requestToDelete?.businessName}'s account? This action cannot be
-              undone.
+              Are you sure you want to permanently delete
+              {requestToDelete?.businessName}&apos;s account? This action cannot
+              be undone.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
