@@ -30,6 +30,9 @@ import {
 import { Dancing_Script } from "next/font/google";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Menu } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -41,9 +44,11 @@ export function AdminSidebar() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
 
-  return (
-    <Sidebar className="hidden md:flex">
+  const sidebarContent = (
+    <>
       <SidebarHeader className="border-b px-6 py-3">
         <Link href="/admin" className={dancingScript.className}>
           MEMO ADMIN
@@ -180,6 +185,31 @@ export function AdminSidebar() {
           </Button>
         </Button>
       </SidebarFooter>
-    </Sidebar>
+    </>
   );
+
+  if (isMobile) {
+    return (
+      <>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden fixed left-4 top-3 z-50"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-0">
+            <Sidebar className="relative border-none">
+              {sidebarContent}
+            </Sidebar>
+          </SheetContent>
+        </Sheet>
+      </>
+    );
+  }
+
+  return <Sidebar className="hidden md:flex">{sidebarContent}</Sidebar>;
 }
