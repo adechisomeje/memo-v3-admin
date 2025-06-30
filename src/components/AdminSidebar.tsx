@@ -33,6 +33,8 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -50,8 +52,17 @@ export function AdminSidebar() {
   const sidebarContent = (
     <>
       <SidebarHeader className="border-b px-6 py-3">
-        <Link href="/admin" className={dancingScript.className}>
-          MEMO ADMIN
+        <Link href="/admin" className="flex items-center gap-2">
+          <Image
+            src="/assets/images/icon.png"
+            alt="Eazi Gifting"
+            width={24}
+            height={24}
+            className="object-contain"
+          />
+          <span className={cn(dancingScript.className, "text-lg")}>
+            Eazi Gifting Admin
+          </span>
         </Link>
       </SidebarHeader>
       <SidebarContent className="flex flex-col py-2">
