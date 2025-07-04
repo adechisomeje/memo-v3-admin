@@ -1,6 +1,6 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+'use client';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -8,21 +8,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
 
 const schema = z.object({
   email: z.string().email(),
   password: z.string().min(8, {
-    message: "Password must be at least 8 characters long",
+    message: 'Password must be at least 8 characters long',
   }),
 });
 
@@ -35,22 +35,19 @@ const LoginForm = () => {
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
   async function onSubmit(values: SignInFormValues) {
     setLoading(true);
     try {
-      console.log("Attempting to sign in with:", values.email);
-      const res = await signIn("signIn", {
+      const res = await signIn('signIn', {
         email: values.email,
         password: values.password,
         redirect: false,
       });
-
-      console.log("Sign in response:", res);
 
       if (res?.error) {
         toast.error(res.error);
@@ -58,12 +55,11 @@ const LoginForm = () => {
       }
 
       if (res?.ok) {
-        router.push("/admin");
+        router.push('/admin');
         router.refresh();
       }
-    } catch (error) {
-      console.error("Sign in error:", error);
-      toast.error("An unexpected error occurred");
+    } catch {
+      toast.error('An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -130,12 +126,12 @@ const LoginForm = () => {
             </div>
 
             <Button
-              loading={loading}
               className="w-full"
               variant="default"
               type="submit"
+              disabled={loading}
             >
-              Sign In
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
         </Form>

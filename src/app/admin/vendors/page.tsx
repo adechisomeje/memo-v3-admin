@@ -11,7 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDebounce } from "use-debounce";
 
 import { Button } from "@/components/ui/button";
@@ -58,18 +58,18 @@ import {
 export default function VendorsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery] = useDebounce(searchQuery, 1000); // Increased debounce time
+  const [debouncedQuery] = useDebounce(searchQuery, 1000);
   const { status } = useSession();
 
-  // Main vendors query (always runs for metrics)
+  // Main vendors query
   const { data: allVendorsResponse, isPending: isLoadingAll } = useQuery({
     queryKey: [queryKeys.allVendors, currentPage],
     queryFn: () => getAllVendors(currentPage),
-    enabled: status === "authenticated" && !debouncedQuery, // Only run when not searching
+    enabled: status === "authenticated" && !debouncedQuery,
     staleTime: 5 * 60 * 1000,
   });
 
-  // Search query (only runs when there's a search term)
+  // Search query
   const { data: searchResponse, isPending: isSearching } = useQuery({
     queryKey: [queryKeys.vendorSearch, debouncedQuery, currentPage],
     queryFn: () => searchVendors(debouncedQuery, currentPage),
@@ -77,47 +77,57 @@ export default function VendorsPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Reset to page 1 when search query changes
+  // Reset to page 1 when search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedQuery]);
 
-  // Display the skeleton loading component when initially loading
-  if (isLoadingAll && !debouncedQuery) {
-    return <VendorsPageSkeleton />;
-  }
-
-  // Determine which data to use
   const isSearchMode = !!debouncedQuery;
   const vendorsResponse = isSearchMode ? searchResponse : allVendorsResponse;
   const isLoading = isSearchMode ? isSearching : isLoadingAll;
 
-  const vendors = (vendorsResponse?.data || []) as Array<{
-    _id: string;
-    country: string;
-    state: string;
-    city: string;
-    businessName: string;
-    instagram: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    businessAddress: string;
-    operatingHours: OperatingHours;
-    paymentDetails: PaymentDetails;
-    stats: Stats;
-    profilePicture: string;
-    isVerified: boolean;
-    role: "VENDOR" | "CUSTOMER" | "ADMIN";
-    productCategories: [];
-    cityDeliveryPrices: [];
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }>;
+  // Memoized vendors data
+  const vendors = useMemo(
+    () =>
+      (vendorsResponse?.data || []) as Array<{
+        _id: string;
+        country: string;
+        state: string;
+        city: string;
+        businessName: string;
+        instagram: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string;
+        businessAddress: string;
+        operatingHours: OperatingHours;
+        paymentDetails: PaymentDetails;
+        stats: Stats;
+        profilePicture: string;
+        isVerified: boolean;
+        role: "VENDOR" | "CUSTOMER" | "ADMIN";
+        productCategories: [];
+        cityDeliveryPrices: [];
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
+      }>,
+    [vendorsResponse]
+  );
 
+  // Calculate metrics
   const totalVendors = vendorsResponse?.total || 0;
+  const pendingApproval = vendors.filter((vendor) => !vendor.isVerified).length;
+  const subscribedVendors = vendors.filter(
+    (vendor) => vendor.stats.totalRevenue > 0
+  ).length;
+
+  // Display skeleton while loading initial data
+  if (isLoadingAll && !debouncedQuery) {
+    return <VendorsPageSkeleton />;
+  }
+
   const totalPages = Math.ceil(
     (vendorsResponse?.total || 0) / (vendorsResponse?.limit || 10)
   );
@@ -162,10 +172,6 @@ export default function VendorsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Vendor Management</h1>
-        {/* <Button>
-          <Plus className='mr-2 h-4 w-4' />
-          Add New Vendor
-        </Button> */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-4">
@@ -179,13 +185,13 @@ export default function VendorsPage() {
         />
         <VendorMetricCard
           title="Pending Approval"
-          value="0"
+          value={`${pendingApproval}`}
           icon={<Store className="h-5 w-5" />}
           description="Awaiting approval for withdrawal"
         />
         <VendorMetricCard
           title="Subscribed"
-          value="0"
+          value={`${subscribedVendors}`}
           icon={<Store className="h-5 w-5" />}
           description="Subscribed to the platform"
         />
@@ -353,7 +359,7 @@ export default function VendorsPage() {
             </Table>
           </div>
 
-          {/* Only show pagination if there are vendors and not loading */}
+          {/* Pagination section */}
           {!isLoading && vendors.length > 0 && (
             <div className="mt-10">
               <Pagination>
