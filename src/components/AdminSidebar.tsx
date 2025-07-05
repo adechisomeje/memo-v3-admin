@@ -150,7 +150,7 @@ export function AdminSidebar() {
               active={pathname === "/admin/deletion-requests"}
             >
               <UserX className="h-4 w-4" />
-              <span>Deletion Requests</span>
+              <span>Delete Requests</span>
             </SidebarNavLink>
             <SidebarNavLink
               href="/admin/locations"
@@ -213,9 +213,7 @@ export function AdminSidebar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
-            <Sidebar className="relative border-none">
-              {sidebarContent}
-            </Sidebar>
+            <Sidebar className="relative border-none">{sidebarContent}</Sidebar>
           </SheetContent>
         </Sheet>
       </>
