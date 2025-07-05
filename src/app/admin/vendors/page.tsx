@@ -4,6 +4,7 @@ import type React from "react";
 import { MoreHorizontal, Search, Filter, Eye, Store, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useDebounce } from "use-debounce";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,8 +49,12 @@ import {
 
 export default function VendorsPage() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery] = useDebounce(searchQuery, 1000);
   const { status } = useSession();
-  const { data: vendorsResponse, isPending } = useQuery({
+
+  // Main vendors query
+  const { data: allVendorsResponse, isPending: isLoadingAll } = useQuery({
     queryKey: [queryKeys.allVendors, currentPage],
     queryFn: () => getAllVendors(currentPage),
     enabled: status === "authenticated" && !debouncedQuery,
@@ -64,14 +69,19 @@ export default function VendorsPage() {
     staleTime: 5 * 60 * 1000,
   });
 
+  // Explicitly use searchResponse and isSearching to satisfy TypeScript
+  const isSearchMode = !!debouncedQuery;
+  const currentResponse = isSearchMode ? searchResponse : allVendorsResponse;
+  const isLoading = isSearchMode ? isSearching : isLoadingAll;
+
   // Display the skeleton loading component when data is being fetched
-  if (isPending) {
+  if (isLoading) {
     return <VendorsPageSkeleton />;
   }
 
-  console.log(vendorsResponse);
+  console.log(currentResponse);
 
-  const vendors = (vendorsResponse?.data || []) as Array<{
+  const vendors = (currentResponse?.data || []) as Array<{
     _id: string;
     country: string;
     state: string;
@@ -96,9 +106,9 @@ export default function VendorsPage() {
     __v: number;
   }>;
 
-  const totalVendors = vendorsResponse?.total || 0;
+  const totalVendors = currentResponse?.total || 0;
   const totalPages = Math.ceil(
-    (vendorsResponse?.total || 0) / (vendorsResponse?.limit || 10)
+    (currentResponse?.total || 0) / (currentResponse?.limit || 10)
   );
 
   const renderPaginationLinks = () => {
@@ -179,6 +189,8 @@ export default function VendorsPage() {
                   type="search"
                   placeholder="Search vendors..."
                   className="w-full pl-8"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Button variant="outline" size="sm">
