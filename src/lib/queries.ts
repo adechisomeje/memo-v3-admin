@@ -23,4 +23,6 @@ export const queryKeys = {
   
   allProducts: ['allProducts'] as const,
   productsByCategory: (category: string) => ['products', 'category', category] as const,
+  vendorSearch: (query: string, page: number) => ['vendorSearch', query, page] as const,
+
 } as const;
