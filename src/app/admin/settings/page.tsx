@@ -191,7 +191,7 @@ const OrderManagementSkeleton = () => (
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
+        <div className="flex flex-col sm:flex-row  items-start sm:items-center justify-between mb-4 gap-4">
           <Skeleton className="h-10 w-[280px]" />
         </div>
         <div className="rounded-md border">
