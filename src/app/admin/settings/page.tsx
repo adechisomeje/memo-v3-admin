@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Store,
-  Search,
   Settings,
   AlertCircle,
   Loader2,
@@ -255,7 +254,7 @@ export default function OrderManagementPage() {
   });
 
   // Queries
-  const { data: settings, isPending: isSettingsPending } = useQuery({
+  const { isPending: isSettingsPending } = useQuery({
     queryKey: ["orderAcceptanceSettings"],
     queryFn: getOrderAcceptanceSettings,
   });
